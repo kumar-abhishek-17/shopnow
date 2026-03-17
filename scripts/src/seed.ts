@@ -1,0 +1,333 @@
+import bcrypt from "bcryptjs";
+import { db, usersTable, productsTable, ordersTable } from "@workspace/db";
+
+async function seed() {
+  console.log("🌱 Seeding database...");
+
+  const adminHash = await bcrypt.hash("admin123", 12);
+  const userHash = await bcrypt.hash("user123", 12);
+
+  const [admin, user1] = await db.insert(usersTable).values([
+    {
+      name: "Admin User",
+      email: "admin@shopnow.com",
+      passwordHash: adminHash,
+      role: "admin",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=admin",
+      address: "123 Admin St, New York, NY 10001",
+      phone: "+1 (555) 000-0001",
+    },
+    {
+      name: "Jane Smith",
+      email: "jane@example.com",
+      passwordHash: userHash,
+      role: "user",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=jane",
+      address: "456 Main St, Los Angeles, CA 90001",
+      phone: "+1 (555) 123-4567",
+    },
+    {
+      name: "John Doe",
+      email: "john@example.com",
+      passwordHash: userHash,
+      role: "user",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=john",
+      phone: "+1 (555) 987-6543",
+    },
+  ]).returning().onConflictDoNothing();
+
+  console.log("✅ Users seeded");
+
+  const products = await db.insert(productsTable).values([
+    {
+      name: "Premium Wireless Headphones",
+      description: "Experience crystal-clear audio with our premium wireless headphones. Features noise cancellation, 30-hour battery life, and ultra-comfortable memory foam ear cushions.",
+      price: 199.99,
+      originalPrice: 299.99,
+      category: "Electronics",
+      image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500",
+      images: [
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500",
+        "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=500",
+      ],
+      stock: 45,
+      rating: 4.8,
+      numReviews: 234,
+      featured: true,
+      tags: ["wireless", "audio", "noise-cancelling"],
+    },
+    {
+      name: "Smart Watch Pro",
+      description: "Stay connected and track your fitness with this sleek smartwatch. GPS tracking, heart rate monitor, sleep tracking, and 7-day battery life.",
+      price: 349.99,
+      originalPrice: 449.99,
+      category: "Electronics",
+      image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500",
+      images: [
+        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500",
+        "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500",
+      ],
+      stock: 30,
+      rating: 4.6,
+      numReviews: 189,
+      featured: true,
+      tags: ["wearable", "fitness", "gps"],
+    },
+    {
+      name: "Mechanical Gaming Keyboard",
+      description: "Dominate your gaming sessions with this RGB mechanical keyboard. Cherry MX switches, anti-ghosting, and programmable macros for competitive gaming.",
+      price: 129.99,
+      category: "Electronics",
+      image: "https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=500",
+      images: ["https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=500"],
+      stock: 60,
+      rating: 4.7,
+      numReviews: 156,
+      featured: false,
+      tags: ["gaming", "keyboard", "rgb", "mechanical"],
+    },
+    {
+      name: "4K Webcam",
+      description: "Professional quality 4K webcam for streaming and video calls. AI-powered auto-framing, HDR, dual microphones for crystal clear audio.",
+      price: 89.99,
+      originalPrice: 119.99,
+      category: "Electronics",
+      image: "https://images.unsplash.com/photo-1587826080692-f439cd0b70da?w=500",
+      images: ["https://images.unsplash.com/photo-1587826080692-f439cd0b70da?w=500"],
+      stock: 75,
+      rating: 4.4,
+      numReviews: 98,
+      featured: false,
+      tags: ["webcam", "streaming", "4k"],
+    },
+    {
+      name: "Minimalist Leather Wallet",
+      description: "Slim, elegant RFID-blocking leather wallet. Holds up to 8 cards with a convenient cash pocket. Made from genuine Italian leather.",
+      price: 49.99,
+      originalPrice: 69.99,
+      category: "Accessories",
+      image: "https://images.unsplash.com/photo-1627123424574-724758594e93?w=500",
+      images: ["https://images.unsplash.com/photo-1627123424574-724758594e93?w=500"],
+      stock: 100,
+      rating: 4.5,
+      numReviews: 312,
+      featured: true,
+      tags: ["leather", "wallet", "rfid", "minimalist"],
+    },
+    {
+      name: "Designer Sunglasses",
+      description: "UV400 polarized lenses with lightweight titanium frames. Classic aviator style perfect for any occasion. Comes with a premium case.",
+      price: 159.99,
+      originalPrice: 220.00,
+      category: "Accessories",
+      image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500",
+      images: ["https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500"],
+      stock: 40,
+      rating: 4.3,
+      numReviews: 87,
+      featured: false,
+      tags: ["sunglasses", "uv400", "polarized", "fashion"],
+    },
+    {
+      name: "Premium Running Shoes",
+      description: "Engineered for performance and comfort. Responsive cushioning, breathable mesh upper, and durable outsole for every type of terrain.",
+      price: 129.99,
+      originalPrice: 179.99,
+      category: "Footwear",
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500",
+      images: [
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500",
+        "https://images.unsplash.com/photo-1543508282-6319a3e2621f?w=500",
+      ],
+      stock: 85,
+      rating: 4.7,
+      numReviews: 420,
+      featured: true,
+      tags: ["running", "shoes", "athletic", "performance"],
+    },
+    {
+      name: "Canvas Sneakers",
+      description: "Classic canvas sneakers with a timeless design. Available in multiple colors, featuring a comfortable rubber sole and cushioned insole.",
+      price: 59.99,
+      category: "Footwear",
+      image: "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=500",
+      images: ["https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=500"],
+      stock: 120,
+      rating: 4.2,
+      numReviews: 203,
+      featured: false,
+      tags: ["sneakers", "canvas", "casual"],
+    },
+    {
+      name: "Yoga Mat Premium",
+      description: "Eco-friendly non-slip yoga mat. Extra thick 6mm cushioning for joint protection. Includes carrying strap and alignment lines.",
+      price: 79.99,
+      originalPrice: 99.99,
+      category: "Sports",
+      image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500",
+      images: ["https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500"],
+      stock: 55,
+      rating: 4.6,
+      numReviews: 178,
+      featured: false,
+      tags: ["yoga", "fitness", "eco-friendly"],
+    },
+    {
+      name: "Dumbbells Set (5-25 lbs)",
+      description: "Adjustable dumbbells set ranging from 5 to 25 lbs. Space-saving design with easy weight selector. Perfect for home gym workouts.",
+      price: 249.99,
+      originalPrice: 349.99,
+      category: "Sports",
+      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500",
+      images: ["https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500"],
+      stock: 20,
+      rating: 4.8,
+      numReviews: 95,
+      featured: true,
+      tags: ["dumbbells", "weights", "home-gym", "fitness"],
+    },
+    {
+      name: "Cozy Oversized Hoodie",
+      description: "Ultra-soft cotton blend oversized hoodie. Perfect for lounging or casual outings. Features a spacious kangaroo pocket and drawstring hood.",
+      price: 64.99,
+      originalPrice: 84.99,
+      category: "Clothing",
+      image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500",
+      images: ["https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500"],
+      stock: 90,
+      rating: 4.5,
+      numReviews: 267,
+      featured: false,
+      tags: ["hoodie", "casual", "cotton", "comfortable"],
+    },
+    {
+      name: "Slim Fit Chinos",
+      description: "Versatile slim-fit chinos made from stretch cotton. Perfect for smart-casual occasions. Available in multiple neutral colors.",
+      price: 74.99,
+      category: "Clothing",
+      image: "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=500",
+      images: ["https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=500"],
+      stock: 70,
+      rating: 4.3,
+      numReviews: 143,
+      featured: false,
+      tags: ["chinos", "pants", "smart-casual", "stretch"],
+    },
+    {
+      name: "Stainless Steel Water Bottle",
+      description: "Triple-insulated 32oz stainless steel water bottle. Keeps drinks cold 24 hours and hot 12 hours. BPA-free and leak-proof.",
+      price: 34.99,
+      originalPrice: 44.99,
+      category: "Home & Kitchen",
+      image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500",
+      images: ["https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500"],
+      stock: 150,
+      rating: 4.9,
+      numReviews: 589,
+      featured: false,
+      tags: ["water-bottle", "insulated", "eco-friendly", "bpa-free"],
+    },
+    {
+      name: "Coffee Pour-Over Set",
+      description: "Complete pour-over coffee brewing set including glass carafe, gooseneck kettle, and reusable filter. For the coffee connoisseur.",
+      price: 89.99,
+      originalPrice: 119.99,
+      category: "Home & Kitchen",
+      image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500",
+      images: ["https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500"],
+      stock: 35,
+      rating: 4.7,
+      numReviews: 112,
+      featured: false,
+      tags: ["coffee", "pour-over", "kitchen", "brewing"],
+    },
+    {
+      name: "Portable Bluetooth Speaker",
+      description: "360° surround sound with deep bass. IP67 waterproof, 20-hour battery, and built-in mic for calls. Perfect for outdoor adventures.",
+      price: 79.99,
+      originalPrice: 99.99,
+      category: "Electronics",
+      image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500",
+      images: ["https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500"],
+      stock: 65,
+      rating: 4.5,
+      numReviews: 321,
+      featured: true,
+      tags: ["speaker", "bluetooth", "waterproof", "portable"],
+    },
+    {
+      name: "Scented Soy Candle Set",
+      description: "Set of 3 handcrafted soy wax candles. Scents: Lavender & Cedar, Vanilla Sandalwood, and Fresh Linen. Each burns for 45 hours.",
+      price: 39.99,
+      category: "Home & Kitchen",
+      image: "https://images.unsplash.com/photo-1602874801006-09d63b3c2a28?w=500",
+      images: ["https://images.unsplash.com/photo-1602874801006-09d63b3c2a28?w=500"],
+      stock: 80,
+      rating: 4.6,
+      numReviews: 198,
+      featured: false,
+      tags: ["candles", "soy", "aromatherapy", "home-decor"],
+    },
+  ]).returning().onConflictDoNothing();
+
+  console.log(`✅ ${products?.length ?? 0} products seeded`);
+
+  if (user1 && products && products.length > 0) {
+    await db.insert(ordersTable).values([
+      {
+        userId: user1.id,
+        items: [
+          { productId: products[0].id, name: products[0].name, image: products[0].image, price: products[0].price, quantity: 1 },
+          { productId: products[4].id, name: products[4].name, image: products[4].image, price: products[4].price, quantity: 2 },
+        ],
+        shippingAddress: {
+          fullName: "Jane Smith",
+          address: "456 Main St",
+          city: "Los Angeles",
+          postalCode: "90001",
+          country: "USA",
+        },
+        paymentMethod: "credit_card",
+        paymentStatus: "paid",
+        orderStatus: "delivered",
+        subtotal: products[0].price + products[4].price * 2,
+        shippingCost: 0,
+        tax: (products[0].price + products[4].price * 2) * 0.08,
+        total: (products[0].price + products[4].price * 2) * 1.08,
+      },
+      {
+        userId: user1.id,
+        items: [
+          { productId: products[6].id, name: products[6].name, image: products[6].image, price: products[6].price, quantity: 1 },
+        ],
+        shippingAddress: {
+          fullName: "Jane Smith",
+          address: "456 Main St",
+          city: "Los Angeles",
+          postalCode: "90001",
+          country: "USA",
+        },
+        paymentMethod: "credit_card",
+        paymentStatus: "paid",
+        orderStatus: "shipped",
+        subtotal: products[6].price,
+        shippingCost: 0,
+        tax: products[6].price * 0.08,
+        total: products[6].price * 1.08,
+      },
+    ]).onConflictDoNothing();
+
+    console.log("✅ Sample orders seeded");
+  }
+
+  console.log("🎉 Database seeding complete!");
+  console.log("\n👤 Demo accounts:");
+  console.log("   Admin: admin@shopnow.com / admin123");
+  console.log("   User:  jane@example.com / user123");
+  process.exit(0);
+}
+
+seed().catch((err) => {
+  console.error("❌ Seed failed:", err);
+  process.exit(1);
+});

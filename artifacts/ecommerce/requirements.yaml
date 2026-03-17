@@ -1,0 +1,21 @@
+packages:
+  "framer-motion": "For premium page transitions, staggered reveals, and smooth micro-interactions"
+  "recharts": "For the admin dashboard revenue and order statistics charts"
+  "react-hook-form": "For robust form state management in checkout, auth, and admin forms"
+  "@hookform/resolvers": "For Zod schema validation integration with react-hook-form"
+  "clsx": "Utility for constructing className strings conditionally"
+  "tailwind-merge": "Utility to safely merge Tailwind CSS classes without style conflicts"
+  "date-fns": "For formatting order dates and admin dashboard timelines beautifully"
+
+images:
+  - path: "artifacts/ecommerce/public/images/hero-banner.png"
+    description: "Elegant modern e-commerce hero background, abstract geometric floating shapes in deep navy and soft gold, soft cinematic studio lighting, highly polished premium feel"
+    aspect_ratio: "16:9"
+  - path: "artifacts/ecommerce/public/images/auth-bg.png"
+    description: "Minimalist abstract 3D shapes in monochrome slate and navy, clean studio lighting, elegant atmospheric gradient background"
+    aspect_ratio: "9:16"
+
+notes:
+  - "The API is available at /api. A global fetch interceptor is implemented to automatically attach the JWT token from localStorage as an Authorization: Bearer header to all requests."
+  - "The Cart is managed purely in local state using React Context as requested."
+  - "API hooks are imported from @workspace/api-client-react."
